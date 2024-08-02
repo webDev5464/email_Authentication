@@ -8,7 +8,7 @@ export const UserVerification = async (req, res, next) => {
 
     next();
   } catch (err) {
-    res.status(201).send({
+    res.status(401).send({
       process: false,
       message: err.message,
     });

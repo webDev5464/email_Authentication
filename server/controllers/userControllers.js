@@ -192,7 +192,7 @@ export const userVerify = async (req, res) => {
       UserData: findUser,
     });
   } catch (err) {
-    res.status(201).send({
+    res.status(401).send({
       process: false,
       msg: err.message,
     });
