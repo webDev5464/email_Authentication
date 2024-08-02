@@ -1,4 +1,5 @@
 import express, { json, urlencoded } from "express";
+import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import { dbCon } from "./configs/dbCon.js";
@@ -6,7 +7,7 @@ import { UserRouter } from "./routers/userRouter.js";
 
 dotenv.config();
 const app = express();
-app.use(json(), urlencoded({ extended: true }), cookieParser());
+app.use(json(), urlencoded({ extended: true }), cookieParser(), cors());
 
 app.use("/api", UserRouter);
 

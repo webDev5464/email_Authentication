@@ -30,7 +30,6 @@ export default function PopupMessage() {
   };
 
   useEffect(() => {
-    console.log(otpProcess);
     if (resMessage !== "") {
       if (otpProcess) {
         toast.success(resMessage, successPopupController);

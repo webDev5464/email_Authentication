@@ -46,11 +46,11 @@ const Slice = createSlice({
     //! Register
     builder
       .addCase(UserRegisterHandler.pending, (state) => {
-        state.loading = true;
+        // state.loading = true;
       })
       .addCase(UserRegisterHandler.fulfilled, (state, action) => {
         const { msg, process } = action.payload;
-        state.loading = false;
+        // state.loading = false;
         state.resMessage = msg;
         state.process = process;
       });
@@ -58,17 +58,17 @@ const Slice = createSlice({
     //! Register Otp
     builder
       .addCase(SendOtpHandler.pending, (state) => {
-        state.loading = true;
+        // state.loading = true;
       })
       .addCase(SendOtpHandler.fulfilled, (state, action) => {
         const { msg, process } = action.payload;
-        state.loading = false;
+        // state.loading = false;
         state.resMessage = msg;
         state.otpProcess = process;
       })
       .addCase(SendOtpHandler.rejected, (state, action) => {
         const { process, msg } = action.payload;
-        state.loading = false;
+        // state.loading = false;
         state.resMessage = msg;
         state.otpProcess = process;
       });
@@ -76,29 +76,29 @@ const Slice = createSlice({
     //! Login
     builder
       .addCase(UserLoginHandler.pending, (state) => {
-        state.loading = true;
+        // state.loading = true;
       })
       .addCase(UserLoginHandler.fulfilled, (state, action) => {
         const { msg, process, UserData } = action.payload;
-        state.loading = false;
+        // state.loading = false;
         state.resMessage = msg;
         state.process = process;
         state.userData = UserData;
         state.validUser = process;
       })
       .addCase(UserLoginHandler.rejected, (state, action) => {
-        state.loading = false;
+        // state.loading = false;
         console.log(action.payload);
       });
 
     //! logout
     builder
       .addCase(UserLogoutHandler.pending, (state) => {
-        state.loading = true;
+        // state.loading = true;
       })
       .addCase(UserLogoutHandler.fulfilled, (state, action) => {
         const { msg, process } = action.payload;
-        state.loading = false;
+        // state.loading = false;
         state.resMessage = msg;
         state.process = process;
         if (process) {
@@ -110,11 +110,11 @@ const Slice = createSlice({
     //! verification
     builder
       .addCase(UserVerifyHandler.pending, (state) => {
-        state.loading = true;
+        // state.loading = true;
       })
       .addCase(UserVerifyHandler.fulfilled, (state, action) => {
         const { msg, process, UserData } = action.payload;
-        state.loading = false;
+        // state.loading = false;
         // state.resMessage = msg;
         if (process) {
           state.validUser = process;
@@ -124,16 +124,20 @@ const Slice = createSlice({
           state.userData = null;
         }
         state.validUser = process;
+      })
+      .addCase(UserRegisterHandler.rejected, (state, action) => {
+        console.log(action.payload);
+        // state.loading = false;
       });
 
     //! Reset password request
     builder
       .addCase(UserResetPasswordRequest.pending, (state) => {
-        state.loading = true;
+        // state.loading = true;
       })
       .addCase(UserResetPasswordRequest.fulfilled, (state, action) => {
         const { process, msg } = action.payload;
-        state.loading = false;
+        // state.loading = false;
         state.process = process;
         state.resMessage = msg;
       });
@@ -141,11 +145,11 @@ const Slice = createSlice({
     //! Password reset
     builder
       .addCase(ResetPasswordHandler.pending, (state) => {
-        state.loading = true;
+        // state.loading = true;
       })
       .addCase(ResetPasswordHandler.fulfilled, (state, action) => {
         const { process, msg } = action.payload;
-        state.loading = false;
+        // state.loading = false;
         state.process = process;
         state.resMessage = msg;
       });

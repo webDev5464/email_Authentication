@@ -1,12 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-// import dotenv from 'dotenv'
-// dotenv.config()
-
-// const serverUrl = dotenv.process.env.server
-// console.log(serverUrl)
 
 const serverUrl = "https://email-authentication-3jjo.onrender.com";
+// const serverUrl = "http://localhost:1919";
 
 //! Send otp
 export const SendOtpHandler = createAsyncThunk(
@@ -37,10 +33,13 @@ export const UserLoginHandler = createAsyncThunk(
   "UserLoginHandler",
   async (data, { rejectWithValue }) => {
     try {
-      const apiResponse = await axios.post(`${serverUrl}/api/login`, data);
+      const apiResponse = await axios.post(
+        `https://email-authentication-3jjo.onrender.com/api/login`,
+        data
+      );
       return apiResponse.data;
-    } catch (e) {
-      return rejectWithValue(e.response.data);
+    } catch (err) {
+      return rejectWithValue(err.response.data);
     }
   }
 );
@@ -57,9 +56,16 @@ export const UserLogoutHandler = createAsyncThunk(
 //! Verify
 export const UserVerifyHandler = createAsyncThunk(
   "UserVerifyHandler",
-  async () => {
-    const apiResponse = await axios.get(`${serverUrl}/api/verification`);
-    return apiResponse.data;
+  async ({ rejectWithValue }) => {
+    try {
+      console.log("userVerificationHandler");
+      const apiResponse = await axios.get(`${serverUrl}/api/verification`);
+      console.log(apiResponse.data);
+      return apiResponse.data;
+    } catch (err) {
+      console.log(err);
+      return rejectWithValue(err.response.data);
+    }
   }
 );
 

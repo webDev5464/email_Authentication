@@ -84,7 +84,7 @@ const Login = () => {
           <NavLink to={"/forgotPassword"}>Forget Password</NavLink>
         </div>
         <div className="flex items-center justify-between mt-3">
-          {loading ? (
+          {/* {loading ? (
             <div className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline active:scale-95 w-[100px] h-[40px]">
               <div className="w-full h-full flex justify-center items-center">
                 <div className="loader"></div>
@@ -97,7 +97,13 @@ const Login = () => {
             >
               Login
             </button>
-          )}
+          )} */}
+          <button
+            type="submit"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline active:scale-95 w-[100px] h-[40px]"
+          >
+            Login
+          </button>
         </div>
       </form>
     </div>
