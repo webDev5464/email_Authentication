@@ -33,10 +33,7 @@ export const UserLoginHandler = createAsyncThunk(
   "UserLoginHandler",
   async (data, { rejectWithValue }) => {
     try {
-      const apiResponse = await axios.post(
-        `https://email-authentication-3jjo.onrender.com/api/login`,
-        data
-      );
+      const apiResponse = await axios.post(`${serverUrl}/api/login`, data);
       return apiResponse.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
@@ -64,7 +61,7 @@ export const UserVerifyHandler = createAsyncThunk(
       return apiResponse.data;
     } catch (err) {
       console.log(err);
-      return rejectWithValue(err.response.data);
+      return rejectWithValue(err);
     }
   }
 );
