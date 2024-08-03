@@ -3,11 +3,11 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { resetMessage, resetOtpProcess } from "../../redux/slice/UserSlice";
+import { resetMessage, resetReqProcess } from "../../redux/slice/UserSlice";
 
 export default function PopupMessage() {
   const dispatch = useDispatch();
-  const { resMessage, process, otpProcess } = useSelector(
+  const { resMessage, process, reqProcess } = useSelector(
     (state) => state.userStore
   );
 
@@ -31,22 +31,28 @@ export default function PopupMessage() {
 
   useEffect(() => {
     if (resMessage !== "") {
-      if (otpProcess) {
+      // if (otpProcess) {
+      //   toast.success(resMessage, successPopupController);
+      // } else {
+      //   if (process) {
+      //     toast.success(resMessage, successPopupController);
+      //   } else {
+      //     toast.error(resMessage, errorPopupController);
+      //   }
+      // }
+
+      if (process) {
         toast.success(resMessage, successPopupController);
       } else {
-        if (process) {
-          toast.success(resMessage, successPopupController);
-        } else {
-          toast.error(resMessage, errorPopupController);
-        }
+        toast.error(resMessage, errorPopupController);
       }
 
       setTimeout(() => {
         dispatch(resetMessage());
-        dispatch(resetOtpProcess());
+        dispatch(resetReqProcess());
       }, 500);
     }
-  }, [resMessage, otpProcess]);
+  }, [resMessage, reqProcess]);
 
   return (
     <ToastContainer

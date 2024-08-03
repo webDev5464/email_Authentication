@@ -2,11 +2,10 @@
 /* eslint-disable no-unused-vars */
 import { createSlice } from "@reduxjs/toolkit";
 import {
+  RegisterValidation,
   ResetPasswordHandler,
-  SendOtpHandler,
   UserLoginHandler,
   UserLogoutHandler,
-  UserRegisterHandler,
   UserResetPasswordRequest,
   UserVerifyHandler,
 } from "./UserThunk";
@@ -17,6 +16,7 @@ const initialState = {
   process: null,
   userData: null,
   validUser: false,
+  reqProcess: false,
   otpProcess: false,
 };
 
@@ -31,46 +31,39 @@ const Slice = createSlice({
       return state;
     },
 
-    resetOtpProcess: (state) => {
-      state.otpProcess = false;
+    resetReqProcess: (state) => {
+      state.reqProcess = false;
       return state;
     },
 
-    resetLoading: (state, action) => {
-      state.loading = action.payload;
+    resetOtpProcess: (state, action) => {
+      state.otpProcess = action.payload;
       return state;
     },
   },
 
   extraReducers: (builder) => {
-    //! Register
+    //! Register Validation
     builder
-      .addCase(UserRegisterHandler.pending, (state) => {
+      .addCase(RegisterValidation.pending, (state) => {
         state.loading = true;
       })
-      .addCase(UserRegisterHandler.fulfilled, (state, action) => {
-        const { msg, process } = action.payload;
-        state.loading = false;
-        state.resMessage = msg;
-        state.process = process;
-      });
-
-    //! Register Otp
-    builder
-      .addCase(SendOtpHandler.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(SendOtpHandler.fulfilled, (state, action) => {
-        const { msg, process } = action.payload;
-        state.loading = false;
-        state.resMessage = msg;
-        state.otpProcess = process;
-      })
-      .addCase(SendOtpHandler.rejected, (state, action) => {
+      .addCase(RegisterValidation.fulfilled, (state, action) => {
         const { process, msg } = action.payload;
         state.loading = false;
         state.resMessage = msg;
-        state.otpProcess = process;
+        // state.reqProcess = process;
+        if (process) {
+          state.otpProcess = true;
+        }
+        state.process = process;
+      })
+      .addCase(RegisterValidation.rejected, (state, action) => {
+        const { process, msg } = action.payload;
+        state.loading = false;
+        state.resMessage = msg;
+        // state.reqProcess = process;
+        state.process = process;
       });
 
     //! Login
@@ -157,4 +150,4 @@ const Slice = createSlice({
 });
 
 export const UserSlice = Slice.reducer;
-export const { resetMessage, resetOtpProcess, resetLoading } = Slice.actions;
+export const { resetMessage, resetReqProcess, resetOtpProcess } = Slice.actions;

@@ -1,8 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const serverUrl = "https://email-authentication-3jjo.onrender.com";
-// const serverUrl = "http://localhost:1919";
+// const serverUrl = "https://email-authentication-3jjo.onrender.com";
+const serverUrl = "http://localhost:1919";
 
 //! Send otp
 export const SendOtpHandler = createAsyncThunk(
@@ -19,12 +19,37 @@ export const SendOtpHandler = createAsyncThunk(
   }
 );
 
-//! Register
-export const UserRegisterHandler = createAsyncThunk(
-  "UserRegisterHandler",
-  async (data) => {
-    const apiResponse = await axios.post(`${serverUrl}/api/register`, data);
-    return apiResponse.data;
+//! Register validation with otp
+export const RegisterValidation = createAsyncThunk(
+  "RegisterValidation",
+  async (data, { rejectWithValue }) => {
+    console.log(data);
+    try {
+      const apiResponse = await axios.post(
+        `${serverUrl}/api/registerValidation`,
+        data
+      );
+      return apiResponse.data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+//! Register successfully
+export const RegisterSuccessfullyHandler = createAsyncThunk(
+  "RegisterSuccessfullyHandler",
+  async (otpWithFormData, { rejectWithValue }) => {
+    console.log(otpWithFormData);
+    try {
+      const apiResponse = await axios.post(
+        `${serverUrl}/api/registerSuccessfully`,
+        otpWithFormData
+      );
+      return apiResponse.data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
   }
 );
 
@@ -55,9 +80,7 @@ export const UserVerifyHandler = createAsyncThunk(
   "UserVerifyHandler",
   async ({ rejectWithValue }) => {
     try {
-      console.log("userVerificationHandler");
       const apiResponse = await axios.get(`${serverUrl}/api/verification`);
-      console.log(apiResponse.data);
       return apiResponse.data;
     } catch (err) {
       console.log(err);
