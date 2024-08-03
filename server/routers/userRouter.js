@@ -3,10 +3,10 @@ import {
   getAllUsers,
   login,
   logout,
-  register,
+  registerValidation,
   requestPasswordReset,
   resetPassword,
-  sendOtp,
+  successfullyRegister,
   userVerify,
 } from "../controllers/userControllers.js";
 import { UserVerification } from "../middleware/userMiddleware.js";
@@ -14,8 +14,8 @@ import { UserVerification } from "../middleware/userMiddleware.js";
 export const UserRouter = Router();
 
 UserRouter.route("/users").get(getAllUsers);
-UserRouter.route("/sendOtp").post(sendOtp)
-UserRouter.route("/register").post(register);
+UserRouter.route("/registerValidation").post(registerValidation);
+UserRouter.route("/registerSuccessfully").post(successfullyRegister);
 UserRouter.route("/login").post(login);
 UserRouter.route("/logout").get(logout);
 UserRouter.route("/verification").get(UserVerification, userVerify);

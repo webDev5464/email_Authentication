@@ -26,12 +26,54 @@ function generateNumericOtp(length) {
 
 const otps = new Map(); // To store OTPs temporarily
 
-export const sendOtp = async (req, res) => {
-  try {
-    const { email } = req.body;
-    if (!email) throw new Error("Email is required.");
+// export const sendOtp = async (req, res) => {
+//   try {
+//     const { email } = req.body;
+//     if (!email) throw new Error("Email is required.");
 
-    // const otp = crypto.randomBytes(3).toString("hex"); // Generate 6 digit OTP
+//     // const otp = crypto.randomBytes(3).toString("hex"); // Generate 6 digit OTP
+//     const otp = generateNumericOtp(6);
+//     const otpExpireTime = Date.now() + 60000; // OTP valid for 1 minute
+
+//     otps.set(email, { otp, otpExpireTime });
+
+//     await transporter.sendMail({
+//       from: process.env.Admin_email,
+//       to: email,
+//       subject: "Your OTP for registration",
+//       text: `Your OTP is ${otp}. It will expire in 1 minute.`,
+//     });
+
+//     res.status(200).send({
+//       process: true,
+//       msg: "OTP sent successfully to your email.",
+//     });
+//   } catch (err) {
+//     res.status(400).send({
+//       process: false,
+//       msg: err.message,
+//     });
+//   }
+// };
+
+export const registerValidation = async (req, res, next) => {
+  try {
+    const { fullName, username, email, pass, conPass } = req.body;
+    if (!fullName) throw new Error("Full name is required.");
+    if (!username) throw new Error("Username name is required.");
+    if (!email) throw new Error("Email is required.");
+    if (!pass) throw new Error("Password is required.");
+    if (!conPass) throw new Error("Confirm password is required.");
+
+    const existUser = await $userModel.findOne({
+      $or: [{ username }, { email }],
+    });
+
+    if (existUser) throw new Error("User already registered.");
+
+    if (pass !== conPass)
+      throw new Error("Password and confirm password not match.");
+
     const otp = generateNumericOtp(6);
     const otpExpireTime = Date.now() + 60000; // OTP valid for 1 minute
 
@@ -49,39 +91,21 @@ export const sendOtp = async (req, res) => {
       msg: "OTP sent successfully to your email.",
     });
   } catch (err) {
-    res.status(400).send({
+    res.status(401).send({
       process: false,
       msg: err.message,
     });
   }
 };
 
-export const register = async (req, res) => {
+export const successfullyRegister = async (req, res) => {
   try {
-    const { fullName, username, email, pass, conPass, otp } = req.body;
-    if (!fullName) throw new Error("Full name is required.");
-    if (!username) throw new Error("Username name is required.");
-    if (!email) throw new Error("Email is required.");
-    if (!pass) throw new Error("Password is required.");
-    if (!conPass) throw new Error("Confirm password is required.");
-    if (!otp) throw new Error("OTP is required.");
-
-    const existUser = await $userModel.findOne({
-      $or: [{ username }, { email }],
-    });
-
-    if (existUser) {
-      // throw Error("User already registered.");
-
-      res.status(202).send({
-        process: false,
-        msg: "User already registered.",
-      });
-
-      return;
-    }
+    const { fullName, username, email, pass, otp } = req.body;
+    console.log({ fullName, username, email, pass, otp });
 
     const storedOtpData = otps.get(email);
+    console.log(storedOtpData)
+    console.log(otps)
     // if (storedOtpData.otp !== otp) throw new Error("Invalid OTP");
     if (storedOtpData.otp !== otp || Date.now > storedOtpData.otpExpireTime) {
       res.status(401).send({
@@ -92,10 +116,7 @@ export const register = async (req, res) => {
       return;
     }
 
-    if (pass !== conPass)
-      throw new Error("Password and confirm password not match.");
-
-    await $userModel({
+    const saveUser = await $userModel({
       fullName,
       username,
       email,
@@ -109,7 +130,7 @@ export const register = async (req, res) => {
       msg: "User register successfully",
     });
   } catch (err) {
-    res.send({
+    res.status(401).send({
       process: false,
       msg: err.message,
     });
@@ -211,14 +232,6 @@ export const requestPasswordReset = async (req, res) => {
       user.resetPasswordToken = token;
       user.resetPasswordExpire = Date.now() + 3600000; // 1h
       await user.save();
-
-      // const transporter = nodemailer.createTransport({
-      //   service: "Gmail",
-      //   auth: {
-      //     user: process.env.Admin_email,
-      //     pass: process.env.Admin_email_password,
-      //   },
-      // });
 
       const mailOptions = {
         to: user.email,
