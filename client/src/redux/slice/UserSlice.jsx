@@ -2,6 +2,7 @@
 /* eslint-disable no-unused-vars */
 import { createSlice } from "@reduxjs/toolkit";
 import {
+  RegisterSuccessfullyHandler,
   RegisterValidation,
   ResetPasswordHandler,
   UserLoginHandler,
@@ -18,6 +19,7 @@ const initialState = {
   validUser: false,
   reqProcess: false,
   otpProcess: false,
+  otpValidation: false,
 };
 
 const Slice = createSlice({
@@ -39,6 +41,10 @@ const Slice = createSlice({
     resetOtpProcess: (state, action) => {
       state.otpProcess = action.payload;
       return state;
+    },
+
+    resetOtpValidation: (state) => {
+      state.otpValidation = false;
     },
   },
 
@@ -64,6 +70,26 @@ const Slice = createSlice({
         state.resMessage = msg;
         // state.reqProcess = process;
         state.process = process;
+      });
+
+    //! Register Successfully
+    builder
+      .addCase(RegisterSuccessfullyHandler.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(RegisterSuccessfullyHandler.fulfilled, (state, action) => {
+        const { msg, process } = action.payload;
+        state.loading = false;
+        state.resMessage = msg;
+        state.process = process;
+        state.otpValidation = true;
+      })
+      .addCase(RegisterSuccessfullyHandler.rejected, (state, action) => {
+        const { msg } = action.payload;
+        state.loading = false;
+        state.process = false;
+        state.resMessage = msg;
+        state.otpValidation = false;
       });
 
     //! Login
@@ -150,4 +176,9 @@ const Slice = createSlice({
 });
 
 export const UserSlice = Slice.reducer;
-export const { resetMessage, resetReqProcess, resetOtpProcess } = Slice.actions;
+export const {
+  resetMessage,
+  resetReqProcess,
+  resetOtpProcess,
+  resetOtpValidation,
+} = Slice.actions;

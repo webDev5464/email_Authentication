@@ -26,37 +26,7 @@ function generateNumericOtp(length) {
 
 const otps = new Map(); // To store OTPs temporarily
 
-// export const sendOtp = async (req, res) => {
-//   try {
-//     const { email } = req.body;
-//     if (!email) throw new Error("Email is required.");
-
-//     // const otp = crypto.randomBytes(3).toString("hex"); // Generate 6 digit OTP
-//     const otp = generateNumericOtp(6);
-//     const otpExpireTime = Date.now() + 60000; // OTP valid for 1 minute
-
-//     otps.set(email, { otp, otpExpireTime });
-
-//     await transporter.sendMail({
-//       from: process.env.Admin_email,
-//       to: email,
-//       subject: "Your OTP for registration",
-//       text: `Your OTP is ${otp}. It will expire in 1 minute.`,
-//     });
-
-//     res.status(200).send({
-//       process: true,
-//       msg: "OTP sent successfully to your email.",
-//     });
-//   } catch (err) {
-//     res.status(400).send({
-//       process: false,
-//       msg: err.message,
-//     });
-//   }
-// };
-
-export const registerValidation = async (req, res, next) => {
+export const registerValidation = async (req, res) => {
   try {
     const { fullName, username, email, pass, conPass } = req.body;
     if (!fullName) throw new Error("Full name is required.");
@@ -101,34 +71,32 @@ export const registerValidation = async (req, res, next) => {
 export const successfullyRegister = async (req, res) => {
   try {
     const { fullName, username, email, pass, otp } = req.body;
-    console.log({ fullName, username, email, pass, otp });
 
     const storedOtpData = otps.get(email);
-    console.log(storedOtpData)
-    console.log(otps)
-    // if (storedOtpData.otp !== otp) throw new Error("Invalid OTP");
+    if (!storedOtpData) throw new Error("OTP expired.");
+    
     if (storedOtpData.otp !== otp || Date.now > storedOtpData.otpExpireTime) {
       res.status(401).send({
         process: false,
-        msg: "Invalid OTP or OTP has expired.",
+        msg: "Invalid OTP",
       });
 
       return;
     }
 
-    const saveUser = await $userModel({
+    await $userModel({
       fullName,
       username,
       email,
       pass: await hash(pass, 10),
     }).save();
 
-    otps.delete(email); // Remove the OTP after successful registration
-
     res.status(200).send({
       process: true,
       msg: "User register successfully",
     });
+
+    otps.delete(email); // Remove the OTP after successful registration
   } catch (err) {
     res.status(401).send({
       process: false,

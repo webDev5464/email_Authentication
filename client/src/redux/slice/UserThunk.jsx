@@ -4,21 +4,6 @@ import axios from "axios";
 // const serverUrl = "https://email-authentication-3jjo.onrender.com";
 const serverUrl = "http://localhost:1919";
 
-//! Send otp
-export const SendOtpHandler = createAsyncThunk(
-  "SendOtpHandler",
-  async (email, { rejectWithValue }) => {
-    try {
-      const apiResponse = await axios.post(`${serverUrl}/api/sendOtp`, {
-        email,
-      });
-      return apiResponse.data;
-    } catch (err) {
-      return rejectWithValue(err.response.data);
-    }
-  }
-);
-
 //! Register validation with otp
 export const RegisterValidation = createAsyncThunk(
   "RegisterValidation",
@@ -40,7 +25,6 @@ export const RegisterValidation = createAsyncThunk(
 export const RegisterSuccessfullyHandler = createAsyncThunk(
   "RegisterSuccessfullyHandler",
   async (otpWithFormData, { rejectWithValue }) => {
-    console.log(otpWithFormData);
     try {
       const apiResponse = await axios.post(
         `${serverUrl}/api/registerSuccessfully`,

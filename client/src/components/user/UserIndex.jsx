@@ -4,6 +4,7 @@ import UserNavigation from "./layouts/UserNavigation";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { UserVerifyHandler } from "../../redux/slice/UserThunk";
+import { resetOtpProcess } from "../../redux/slice/UserSlice";
 
 export default function UserIndex() {
   const dispatch = useDispatch();
@@ -12,6 +13,7 @@ export default function UserIndex() {
 
   useEffect(() => {
     dispatch(UserVerifyHandler());
+    dispatch(resetOtpProcess(false))
 
     if (validUser) {
       navigate("/");
