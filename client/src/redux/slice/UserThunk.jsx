@@ -1,8 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// const serverUrl = "https://email-authentication-3jjo.onrender.com";
-const serverUrl = "http://localhost:1919";
+const serverUrl = "https://email-authentication-3jjo.onrender.com";
+// const serverUrl = "http://localhost:1919";
 
 //! Register validation with otp
 export const RegisterValidation = createAsyncThunk(
