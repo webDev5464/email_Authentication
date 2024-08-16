@@ -15,11 +15,11 @@ export default function UserIndex() {
     dispatch(UserVerifyHandler());
     dispatch(resetOtpProcess(false))
 
-    if (validUser) {
-      navigate("/");
-    } else {
-      navigate("/login");
-    }
+    // if (validUser) {
+    //   navigate("/");
+    // } else {
+    //   navigate("/login");
+    // }
   }, []);
 
   return (

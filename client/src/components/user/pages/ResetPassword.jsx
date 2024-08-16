@@ -1,14 +1,16 @@
-import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { BiSolidShow } from "react-icons/bi";
 import { BiSolidHide } from "react-icons/bi";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ResetPasswordHandler } from "../../../redux/slice/UserThunk";
 
 export default function ResetPassword() {
   const { token } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   const [passShow, setPassShow] = useState(false);
+  const {process} = useSelector(state => state.userStore)
 
   const [formData, setFormData] = useState({
     token,
@@ -20,6 +22,12 @@ export default function ResetPassword() {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+
+  useEffect(() => {
+    if (process) {
+      navigate('/')
+    }
+  }, [process])
 
   return (
     <div className="h-[100vh]">
