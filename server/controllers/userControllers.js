@@ -74,7 +74,7 @@ export const successfullyRegister = async (req, res) => {
 
     const storedOtpData = otps.get(email);
     if (!storedOtpData) throw new Error("OTP expired.");
-    
+
     if (storedOtpData.otp !== otp || Date.now > storedOtpData.otpExpireTime) {
       res.status(401).send({
         process: false,
